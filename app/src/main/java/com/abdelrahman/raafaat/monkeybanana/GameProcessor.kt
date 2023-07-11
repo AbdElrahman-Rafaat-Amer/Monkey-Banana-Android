@@ -24,8 +24,8 @@ class GameProcessor(
     private var groundSprite: GroundSprite? = null
     private var monkeySprite: MonkeySprite? = null
     private var countMonkees: Int = 0
-    private val pipeWidth = Utils.getDimenInPx(context, R.dimen.pipe_width)
-    private val pipeInterval = Utils.getDimenInPx(context, R.dimen.pipe_interval)
+    private val monkeyWidth = Utils.getDimenInPx(context, R.dimen.monkey_width)
+    private val monkeyInterval = Utils.getDimenInPx(context, R.dimen.monkey_interval)
     private var newBestScore: Boolean = false
 
     @WorkerThread
@@ -40,50 +40,13 @@ class GameProcessor(
         while (!Thread.interrupted()) {
 //            if (isPaused) continue
 
-            val startTime = System.currentTimeMillis()
+
             val canvas = holder.lockCanvas()
             val screenWidth = canvas.width.toFloat()
 
-            try {
-                cleanCanvas(canvas)
-
-                /*
-                This iteration is performed via an Iterator object and we use it to delete Sprites
-                considered as no longer alive. This work is encapsulated within a try / finally block.
-                In the finally part, we ask that the updates we have made on the Canvas be posted on
-                the SurfaceHolder via a call to the unlockCanvasAndPost method with the current
-                instance of Canvas passed as a parameter.
-                 */
-                val iterator: MutableListIterator<Sprite> = workSprites.listIterator()
-                while (iterator.hasNext()) {
-                    val sprite = iterator.next()
-                    if (sprite.isAlive()) {
-                        sprite.onDraw(canvas, globalPaint, currentStatus)
-                    } else {
-                        if (sprite is MonkeySprite) {
-                            points++
-                            countMonkees--
-                        }
-                        iterator.remove()
-                    }
-                }
-            } finally {
-                holder.unlockCanvasAndPost(canvas)
-            }
-
-            /*
-            The rendering time is measured before comparing this time to a constant called GAP.
-            This constant allows us to add, if necessary, a delay to avoid that the rendering
-            phase of the Game Loop be too fast.
-             */
-            val duration = System.currentTimeMillis() - startTime
-            val gap = Sprite.MS_PER_FRAME - duration
-            if (gap > 0) {
-                try {
-                    Thread.sleep(gap)
-                } catch (e: Exception) {
-                    break
-                }
+            removeDiedSprites(canvas)
+            if (!renderFrames()) {
+                break
             }
 
             when (currentStatus) {
@@ -110,9 +73,9 @@ class GameProcessor(
                     // don't forget the obstacles and the rewards !
                     var nextMonkeyX = screenWidth
                     if (monkeySprite != null) {
-                        nextMonkeyX = monkeySprite!!.x + pipeInterval
+                        nextMonkeyX = monkeySprite!!.x + monkeyInterval
                     }
-                    while (countMonkees < Sprite.MIN_MONKEES) {
+                    while (countMonkees < Sprite.MIN_MONKEES && points == 0) {
                         monkeySprite = MonkeySprite(
                             context,
                             nextMonkeyX,
@@ -120,7 +83,7 @@ class GameProcessor(
                         )
                         workSprites.add(0, monkeySprite!!)
 
-                        nextMonkeyX += pipeWidth + pipeInterval
+                        nextMonkeyX += monkeyWidth + monkeyInterval
                         countMonkees++
                     }
 
@@ -133,31 +96,72 @@ class GameProcessor(
                     val iterator: MutableListIterator<Sprite> = workSprites.listIterator()
                     while (iterator.hasNext()) {
                         val sprite = iterator.next()
-                        if (sprite.isHit(bananaSprite!!)) {
-                            when (sprite) {
-                                is MonkeySprite -> {
-                                    gameInterface?.onHit()
-                                    /*
-                                    The game is over and we will have to display the end screen to
-                                    the player the next time the Game Loop passes.
-                                     */
-                                    currentStatus = Sprite.STATUS_GAME_OVER
-                                    gameInterface?.onGameOver()
-                                }
-
-                                is GroundSprite -> {
-                                    //---------
-                                }
-
-                                else -> {
-                                    points++
-                                    gameInterface?.onGetPoint()
-                                }
-                            }
+                        if (sprite.isHit(bananaSprite!!) && sprite is MonkeySprite) {
+                            gameInterface?.onHit()
+                            /*
+                            The game is over and we will have to display the end screen to
+                            the player the next time the Game Loop passes.
+                             */
+                            currentStatus = Sprite.STATUS_GAME_OVER
+                            gameInterface?.onGameOver()
                         }
                     }
                 }
             }
+        }
+    }
+
+    private fun renderFrames(): Boolean {
+        val startTime = System.currentTimeMillis()
+        /*
+            The rendering time is measured before comparing this time to a constant called GAP.
+            This constant allows us to add, if necessary, a delay to avoid that the rendering
+            phase of the Game Loop be too fast.
+             */
+        val duration = System.currentTimeMillis() - startTime
+        val gap = Sprite.MS_PER_FRAME - duration
+        if (gap > 0) {
+            return try {
+                Thread.sleep(gap)
+                true
+            } catch (e: Exception) {
+                false
+            }
+        }
+        return true
+    }
+
+    private fun removeDiedSprites(canvas: Canvas) {
+        try {
+            cleanCanvas(canvas)
+
+            /*
+            This iteration is performed via an Iterator object and we use it to delete Sprites
+            considered as no longer alive. This work is encapsulated within a try / finally block.
+            In the finally part, we ask that the updates we have made on the Canvas be posted on
+            the SurfaceHolder via a call to the unlockCanvasAndPost method with the current
+            instance of Canvas passed as a parameter.
+             */
+            val iterator: MutableListIterator<Sprite> = workSprites.listIterator()
+            while (iterator.hasNext()) {
+                val sprite = iterator.next()
+                if (sprite.isAlive()) {
+                    sprite.onDraw(canvas, globalPaint, currentStatus)
+                } else {
+                    if (sprite is MonkeySprite) {
+                        points++
+                        countMonkees--
+                        gameInterface?.onGetPoint()
+                    }
+                    iterator.remove()
+                    if (workSprites.size == 2) {
+                        currentStatus = Sprite.STATUS_GAME_OVER
+                        gameInterface?.onGameOver()
+                    }
+                }
+            }
+        } finally {
+            holder.unlockCanvasAndPost(canvas)
         }
     }
 
@@ -167,7 +171,7 @@ class GameProcessor(
      * activity inherits. It is in this method that we will interact with the player when they type
      * on the screen.
      */
-    fun onTap(x: Float, y: Float) {
+    fun onTap() {
         when (currentStatus) {
             Sprite.STATUS_NOT_STARTED -> {
                 /*
@@ -195,7 +199,6 @@ class GameProcessor(
                 screen the player to touch in order to react accordingly either to start a new game
                 or to share the successful score via social networks for example.
                  */
-                Log.i(TAG, "onTap: points---------> $points")
                 gameInterface?.onGameOver()
                 currentStatus = Sprite.STATUS_PLAY
                 startGame()

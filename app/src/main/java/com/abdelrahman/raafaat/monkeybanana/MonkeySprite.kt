@@ -5,9 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
-import android.util.Log
 import androidx.core.graphics.toRect
-import com.abdelrahman.raafaat.monkeybanana.Sprite.Companion.TAG
 import com.abdelrahman.raafaat.monkeybanana.Sprite.Companion.UNDEFINED
 import kotlin.random.Random
 
@@ -19,7 +17,7 @@ class MonkeySprite(
 
     private val drawableMonkey: Drawable = Utils.getDrawable(context, R.drawable.chimpanzee)
     private val speed: Float = Utils.getDimenInPx(context, R.dimen.sprite_speed)
-    private val pipeWidth: Float = Utils.getDimenInPx(context, R.dimen.pipe_width)
+    private val monkeyWidth: Float = Utils.getDimenInPx(context, R.dimen.monkey_width)
     private val groundHeight: Float = Utils.getDimenInPx(context, R.dimen.ground_height)
     private var upHeight: Float = UNDEFINED
     private var downHeight: Float = UNDEFINED
@@ -29,7 +27,7 @@ class MonkeySprite(
     override fun onDraw(canvas: Canvas, globalPaint: Paint, status: Int) {
         if (upHeight == UNDEFINED) {
             val screenHeight = canvas.height
-            val maxHeight = screenHeight * 9 / 10 // 4/5 of screenHeight is the max height of monkey
+            val maxHeight = screenHeight * 9 / 10 //  9/10 of screenHeight is the max height of monkey
             val max = maxHeight - groundHeight
             val min = (screenHeight - maxHeight) / 3 + max
             upHeight = getRandomInt(max.toInt(), min.toInt()).toFloat()
@@ -37,7 +35,7 @@ class MonkeySprite(
 
         }
 
-        isAlive = (status != Sprite.STATUS_NOT_STARTED && x + pipeWidth >= 0f)
+        isAlive = (status != Sprite.STATUS_NOT_STARTED && x + monkeyWidth >= 0f)
 
         if (status == Sprite.STATUS_NOT_STARTED) {
             return
@@ -57,7 +55,7 @@ class MonkeySprite(
     private fun getBottomPipeRect() = RectF(
         x,
         upHeight,
-        x + pipeWidth,
+        x + monkeyWidth,
         downHeight
     ).toRect()
 

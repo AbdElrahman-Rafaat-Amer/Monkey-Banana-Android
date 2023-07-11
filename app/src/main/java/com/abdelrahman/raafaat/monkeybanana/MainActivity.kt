@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, SurfaceHolder.Ca
         paint
     }
     private var drawingThread: Thread? = null
+    private var points: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, SurfaceHolder.Ca
     //OnTouchListener
     override fun onTouch(view: View?, event: MotionEvent?): Boolean {
         if (event?.action == MotionEvent.ACTION_DOWN) {
-            gameProcessor.onTap(event.x, event.y)
+            gameProcessor.onTap()
         }
         return false
     }
@@ -57,9 +58,9 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, SurfaceHolder.Ca
 
     private fun startDrawingThread() {
         stopDrawingThread()
-        drawingThread = Thread(Runnable {
+        drawingThread = Thread {
             gameProcessor.execute()
-        })
+        }
         drawingThread!!.start()
     }
 
@@ -83,11 +84,17 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, SurfaceHolder.Ca
 
     //GameInterface
     override fun onGameStart() {
-        Log.i(TAG, "onGameStart: ")
+        runOnUiThread {
+            binding.pointsTextView.visibility = View.VISIBLE
+            binding.pointsTextView.text = getString(R.string.points, 0)
+        }
     }
 
     override fun onGetPoint() {
-        Log.i(TAG, "onGetPoint: ")
+        runOnUiThread {
+            points++
+            binding.pointsTextView.text = getString(R.string.points, points)
+        }
     }
 
     override fun onHit() {
@@ -95,6 +102,9 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, SurfaceHolder.Ca
     }
 
     override fun onGameOver() {
-        Log.i(TAG, "onGameOver: ")
+        runOnUiThread {
+            points = 0
+            binding.pointsTextView.visibility = View.GONE
+        }
     }
 }

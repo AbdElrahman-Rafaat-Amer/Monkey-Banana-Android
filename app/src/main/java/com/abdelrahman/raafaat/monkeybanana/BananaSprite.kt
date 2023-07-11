@@ -14,15 +14,15 @@ class BananaSprite(
 ) : Sprite {
 
     private val bananaDrawable: Drawable =  Utils.getDrawable(context, R.drawable.banana)
-    private val birdHeight: Float = Utils.getDimenInPx(context, R.dimen.bird_height)
+    private val birdHeight: Float = Utils.getDimenInPx(context, R.dimen.banana_height)
     private val birdWidth: Float =
         birdHeight * bananaDrawable.intrinsicWidth / bananaDrawable.intrinsicHeight
     private val groundHeight: Float = Utils.getDimenInPx(context, R.dimen.ground_height)
     private var x: Float = UNDEFINED
     private var y: Float = UNDEFINED
-    private val acceleration: Float = Utils.getDimenInPx(context, R.dimen.bird_acceleration)
+    private val acceleration: Float = Utils.getDimenInPx(context, R.dimen.banana_acceleration)
     private var currentSpeed: Float = 0f
-    private val tapSpeed: Float = Utils.getFloat(context, R.dimen.bird_tap_speed)
+    private val tapSpeed: Float = Utils.getFloat(context, R.dimen.banana_tap_speed)
     private var isAlive: Boolean = true
 
     override fun onDraw(canvas: Canvas, globalPaint: Paint, status: Int) {
