@@ -13,10 +13,10 @@ class BananaSprite(
     context: Context,
 ) : Sprite {
 
-    private val bananaDrawable: Drawable =  Utils.getDrawable(context, R.drawable.banana)
-    private val birdHeight: Float = Utils.getDimenInPx(context, R.dimen.banana_height)
-    private val birdWidth: Float =
-        birdHeight * bananaDrawable.intrinsicWidth / bananaDrawable.intrinsicHeight
+    private val bananaDrawable: Drawable = Utils.getDrawable(context, R.drawable.banana)
+    private val bananaHeight: Float = Utils.getDimenInPx(context, R.dimen.banana_height)
+    private val bananaWidth: Float =
+        bananaHeight * bananaDrawable.intrinsicWidth / bananaDrawable.intrinsicHeight
     private val groundHeight: Float = Utils.getDimenInPx(context, R.dimen.ground_height)
     private var x: Float = UNDEFINED
     private var y: Float = UNDEFINED
@@ -24,28 +24,25 @@ class BananaSprite(
     private var currentSpeed: Float = 0f
     private val tapSpeed: Float = Utils.getFloat(context, R.dimen.banana_tap_speed)
     private var isAlive: Boolean = true
+    private var maxY = 0f
 
     override fun onDraw(canvas: Canvas, globalPaint: Paint, status: Int) {
         isAlive = status != Sprite.STATUS_NOT_STARTED
-        val maxY = canvas.height - birdHeight - groundHeight
-        val minY = 0f
-        if(x == UNDEFINED && y == UNDEFINED) {
-            x = canvas.width / 4 - birdWidth / 2 // 25%
-            y = canvas.height - birdHeight / 2 // 100%
+        maxY = canvas.height - bananaHeight - groundHeight
+
+        if (x == UNDEFINED && y == UNDEFINED) {
+            x = canvas.width / 4 - bananaWidth / 2
+            y = canvas.height - bananaWidth / 2
         }
 
-        if(status != Sprite.STATUS_NOT_STARTED) {
+        if (status == Sprite.STATUS_PLAY) {
             // Reproduce the effect of gravity on our bird
             y += currentSpeed
-            synchronized (this) {
+            synchronized(this) {
                 currentSpeed += acceleration
             }
         }
-        if(y < minY) {
-            // Ensure that the bird remains within the limits of the screen by resetting its
-            // current position to 0 if it reaches the top of the screen.
-            y = minY
-        } else if(y > maxY) {
+        if (y > maxY) {
             // The same is done for its position at the bottom of the screen
             y = maxY
         }
@@ -61,14 +58,16 @@ class BananaSprite(
     fun getRect(): Rect = RectF(
         x,
         y,
-        x + birdWidth,
-        y + birdHeight
+        x + bananaWidth,
+        y + bananaHeight
     ).toRect()
 
     fun jump() {
         synchronized(this) {
-            currentSpeed = tapSpeed
-            y -= currentSpeed
+            if (y >= maxY) {
+                currentSpeed = tapSpeed
+                y -= currentSpeed
+            }
         }
     }
 
