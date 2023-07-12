@@ -10,12 +10,18 @@ import android.view.SurfaceHolder
 import android.view.View
 import com.abdelrahman.raafaat.monkeybanana.Sprite.Companion.TAG
 import com.abdelrahman.raafaat.monkeybanana.databinding.ActivityMainBinding
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 
 class MainActivity : AppCompatActivity(), View.OnTouchListener, SurfaceHolder.Callback,
     GameProcessor.GameInterface {
 
     private lateinit var binding: ActivityMainBinding
-
+    private var mInterstitialAd: InterstitialAd? = null
     private lateinit var gameProcessor: GameProcessor
     private lateinit var holder: SurfaceHolder
     private val globalPaint: Paint by lazy {
@@ -31,6 +37,8 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, SurfaceHolder.Ca
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        initAds()
+
         binding.surfaceView.keepScreenOn = true
         holder = binding.surfaceView.holder
         binding.surfaceView.setZOrderOnTop(true)
@@ -41,6 +49,30 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, SurfaceHolder.Ca
         // Initialize the GameProcessor.
         gameProcessor = GameProcessor(applicationContext, holder, globalPaint, this)
 
+    }
+
+    private fun initAds() {
+        val adRequest = AdRequest.Builder().build()
+
+        InterstitialAd.load(this, getString(R.string.interstitial_ad_unit_id), adRequest,
+            object : InterstitialAdLoadCallback() {
+                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                    mInterstitialAd = interstitialAd
+                }
+
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    mInterstitialAd = null
+                }
+            })
+
+        mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+
+            override fun onAdFailedToShowFullScreenContent(error: AdError) {
+                super.onAdFailedToShowFullScreenContent(error)
+                mInterstitialAd = null
+            }
+
+        }
     }
 
     //OnTouchListener
@@ -98,13 +130,20 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, SurfaceHolder.Ca
     }
 
     override fun onHit() {
-        Log.i(TAG, "onHit: ")
+        Log.i(TAG, "onHit: will play hit sound. This feature will add in next commits")
     }
 
     override fun onGameOver() {
         runOnUiThread {
             points = 0
             binding.pointsTextView.visibility = View.GONE
+            showAds()
+        }
+    }
+
+    private fun showAds() {
+        if (mInterstitialAd != null) {
+            mInterstitialAd?.show(this)
         }
     }
 }
