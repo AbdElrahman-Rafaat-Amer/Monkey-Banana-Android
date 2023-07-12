@@ -6,8 +6,7 @@
     <dimen name="sprite_speed">3dp</dimen>
     <dimen name="banana_height">25dp</dimen>
     <dimen name="banana_acceleration">0.65dp</dimen>
-    <dimen name="banana_tap_speed">-7.0dp</dimen>
+    <dimen name="banana_tap_speed">-16.0dp</dimen>
     <dimen name="ground_width">15dp</dimen>
-    <dimen name="ground_margin">40dp</dimen>
 
 </resources>

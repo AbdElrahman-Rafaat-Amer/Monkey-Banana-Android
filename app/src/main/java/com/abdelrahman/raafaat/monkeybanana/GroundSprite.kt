@@ -13,12 +13,10 @@ class GroundSprite(
     private val speed: Float = Utils.getDimenInPx(context, R.dimen.sprite_speed)
     private var layerX: Float = 0f
     private var layerY: Float = 0f
-    private val groundDown: Drawable = Utils.getDrawable(context, R.drawable.bg_ground_down)
-    private val groundUp: Drawable = Utils.getDrawable(context, R.drawable.bg_ground_up)
+    private val groundUp: Drawable = Utils.getDrawable(context, R.drawable.ic_ground)
     private val groundWidth: Float = Utils.getDimenInPx(context, R.dimen.ground_width)
     private val groundHeight: Float = Utils.getDimenInPx(context, R.dimen.ground_height)
-    private val groupUpHeight: Float =
-        groundHeight - Utils.getDimenInPx(context, R.dimen.ground_margin)
+
     private var isAlive: Boolean = true
 
     override fun onDraw(canvas: Canvas, globalPaint: Paint, status: Int) {
@@ -35,21 +33,12 @@ class GroundSprite(
         }
         layerY = screenHeight - groundHeight
 
-        groundDown.bounds = RectF(
-            0f,
-            layerY,
-            screenWidth,
-            screenHeight
-        ).toRect()
-        groundDown.draw(canvas)
-
-
         for (x in layerX.toInt() until screenWidth.toInt() step groundWidth.toInt()) {
             groundUp.bounds = RectF(
                 x.toFloat(),
                 layerY,
                 x + groundWidth,
-                layerY + groupUpHeight
+                screenHeight
             ).toRect()
             groundUp.draw(canvas)
         }
