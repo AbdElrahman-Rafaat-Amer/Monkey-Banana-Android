@@ -2,4 +2,9 @@
     <string name="app_name">Monkey Banana</string>
     <string name="points">points: %1$d</string>
     <string name="jungle_background">jungle_background</string>
+    <string name="play">Play</string>
+    <string name="game_over">Game Over</string>
+    <string name="cancel">Cancel</string>
+    <string name="score">Your Score: %1$d</string>
+    <string name="best_score">Best Score: %1$d</string>
 </resources>

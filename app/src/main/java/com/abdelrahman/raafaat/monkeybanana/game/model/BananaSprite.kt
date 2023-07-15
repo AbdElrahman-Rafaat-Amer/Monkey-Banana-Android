@@ -1,4 +1,4 @@
-package com.abdelrahman.raafaat.monkeybanana
+package com.abdelrahman.raafaat.monkeybanana.game.model
 
 import android.content.Context
 import android.graphics.Canvas
@@ -7,27 +7,30 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.toRect
-import com.abdelrahman.raafaat.monkeybanana.Sprite.Companion.UNDEFINED
+import com.abdelrahman.raafaat.monkeybanana.R
+import com.abdelrahman.raafaat.monkeybanana.game.GameStatus
+import com.abdelrahman.raafaat.monkeybanana.game.utils.GameUtils
+import com.abdelrahman.raafaat.monkeybanana.game.utils.GameUtils.UNDEFINED
 
 class BananaSprite(
     context: Context,
 ) : Sprite {
 
-    private val bananaDrawable: Drawable = Utils.getDrawable(context, R.drawable.banana)
-    private val bananaHeight: Float = Utils.getDimenInPx(context, R.dimen.banana_height)
+    private val bananaDrawable: Drawable = GameUtils.getDrawable(context, R.drawable.banana)
+    private val bananaHeight: Float = GameUtils.getDimenInPx(context, R.dimen.banana_height)
     private val bananaWidth: Float =
         bananaHeight * bananaDrawable.intrinsicWidth / bananaDrawable.intrinsicHeight
-    private val groundHeight: Float = Utils.getDimenInPx(context, R.dimen.ground_height)
+    private val groundHeight: Float = GameUtils.getDimenInPx(context, R.dimen.ground_height)
     private var x: Float = UNDEFINED
     private var y: Float = UNDEFINED
-    private val acceleration: Float = Utils.getDimenInPx(context, R.dimen.banana_acceleration)
+    private val acceleration: Float = GameUtils.getDimenInPx(context, R.dimen.banana_acceleration)
     private var currentSpeed: Float = 0f
-    private val tapSpeed: Float = Utils.getFloat(context, R.dimen.banana_tap_speed)
+    private val tapSpeed: Float = GameUtils.getFloat(context, R.dimen.banana_tap_speed)
     private var isAlive: Boolean = true
     private var maxY = 0f
 
-    override fun onDraw(canvas: Canvas, globalPaint: Paint, status: Int) {
-        isAlive = status != Sprite.STATUS_NOT_STARTED
+    override fun onDraw(canvas: Canvas, globalPaint: Paint, status: GameStatus) {
+        isAlive = status != GameStatus.STATUS_NOT_STARTED
         maxY = canvas.height - bananaHeight - groundHeight
 
         if (x == UNDEFINED && y == UNDEFINED) {
@@ -35,7 +38,7 @@ class BananaSprite(
             y = canvas.height - bananaWidth / 2
         }
 
-        if (status == Sprite.STATUS_PLAY) {
+        if (status == GameStatus.STATUS_PLAY) {
             // Reproduce the effect of gravity on our bird
             y += currentSpeed
             synchronized(this) {

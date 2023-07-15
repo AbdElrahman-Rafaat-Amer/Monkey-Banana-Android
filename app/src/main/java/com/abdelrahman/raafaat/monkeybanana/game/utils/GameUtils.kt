@@ -1,17 +1,20 @@
-package com.abdelrahman.raafaat.monkeybanana
+package com.abdelrahman.raafaat.monkeybanana.game.utils
 
 import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
-import kotlin.random.Random
 
 
 /**
  * Utility methods.
  */
-object Utils {
+object GameUtils {
+
+    const val MIN_MONKEES = 10
+    const val UNDEFINED = -999f
+    const val TAG = "MONKEY_BANANA"
 
     /**
      * Retrieve a dimensional for a particular resource ID for use as a size in raw pixels.
@@ -29,21 +32,4 @@ object Utils {
      */
     fun getDrawable(context: Context, @DrawableRes id: Int): Drawable =
         ContextCompat.getDrawable(context, id)!!
-}
-
-/**
- * Parses number to digits.
- */
-fun Int.toDigits(): Array<Int> {
-    val digits = mutableListOf<Int>()
-    var i = this
-    if (i == 0) {
-        digits.add(0)
-    } else {
-        while (i > 0) {
-            digits.add(i % 10)
-            i /= 10
-        }
-    }
-    return digits.toTypedArray()
 }

@@ -1,4 +1,4 @@
-package com.abdelrahman.raafaat.monkeybanana
+package com.abdelrahman.raafaat.monkeybanana.game.model
 
 import android.content.Context
 import android.graphics.Canvas
@@ -6,7 +6,10 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.toRect
-import com.abdelrahman.raafaat.monkeybanana.Sprite.Companion.UNDEFINED
+import com.abdelrahman.raafaat.monkeybanana.R
+import com.abdelrahman.raafaat.monkeybanana.game.GameStatus
+import com.abdelrahman.raafaat.monkeybanana.game.utils.GameUtils
+import com.abdelrahman.raafaat.monkeybanana.game.utils.GameUtils.UNDEFINED
 import kotlin.random.Random
 
 class MonkeySprite(
@@ -15,16 +18,16 @@ class MonkeySprite(
     val lastBlockY: Float?
 ) : Sprite {
 
-    private val drawableMonkey: Drawable = Utils.getDrawable(context, R.drawable.chimpanzee)
-    private val speed: Float = Utils.getDimenInPx(context, R.dimen.sprite_speed)
-    private val monkeyWidth: Float = Utils.getDimenInPx(context, R.dimen.monkey_width)
-    private val groundHeight: Float = Utils.getDimenInPx(context, R.dimen.ground_height)
+    private val drawableMonkey: Drawable = GameUtils.getDrawable(context, R.drawable.chimpanzee)
+    private val speed: Float = GameUtils.getDimenInPx(context, R.dimen.sprite_speed)
+    private val monkeyWidth: Float = GameUtils.getDimenInPx(context, R.dimen.monkey_width)
+    private val groundHeight: Float = GameUtils.getDimenInPx(context, R.dimen.ground_height)
     private var upHeight: Float = UNDEFINED
     private var downHeight: Float = UNDEFINED
     private var scored: Boolean = false
     private var isAlive: Boolean = true
 
-    override fun onDraw(canvas: Canvas, globalPaint: Paint, status: Int) {
+    override fun onDraw(canvas: Canvas, globalPaint: Paint, status: GameStatus) {
         if (upHeight == UNDEFINED) {
             val screenHeight = canvas.height
             val maxHeight = screenHeight * 9 / 10 //  9/10 of screenHeight is the max height of monkey
@@ -35,12 +38,12 @@ class MonkeySprite(
 
         }
 
-        isAlive = (status != Sprite.STATUS_NOT_STARTED && x + monkeyWidth >= 0f)
+        isAlive = (status != GameStatus.STATUS_NOT_STARTED && x + monkeyWidth >= 0f)
 
-        if (status == Sprite.STATUS_NOT_STARTED) {
+        if (status == GameStatus.STATUS_NOT_STARTED) {
             return
         }
-        if (status == Sprite.STATUS_PLAY) {
+        if (status == GameStatus.STATUS_PLAY) {
             x -= speed
         }
         drawableMonkey.bounds = getBottomPipeRect()
