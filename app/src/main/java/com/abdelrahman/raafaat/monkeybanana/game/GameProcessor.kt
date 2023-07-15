@@ -102,7 +102,7 @@ class GameProcessor(
                     if (monkeySprite != null) {
                         nextMonkeyX = monkeySprite!!.x + monkeyInterval
                     }
-                    while (countMonkees < MIN_MONKEES && points == 0) {
+                    while (countMonkees < MIN_MONKEES) {
                         monkeySprite = MonkeySprite(
                             context,
                             nextMonkeyX,
@@ -160,6 +160,7 @@ class GameProcessor(
                     if (sprite is MonkeySprite) {
                         points++
                         countMonkees--
+                        checkForNextLevel()
                         gameInterface?.onGetPoint()
                     }
                     iterator.remove()
@@ -171,6 +172,12 @@ class GameProcessor(
             }
         } finally {
             holder.unlockCanvasAndPost(canvas)
+        }
+    }
+
+    private fun checkForNextLevel() {
+        if (points % 5 == 0 && msPerFrame > 3) {
+            msPerFrame -= 2
         }
     }
 
