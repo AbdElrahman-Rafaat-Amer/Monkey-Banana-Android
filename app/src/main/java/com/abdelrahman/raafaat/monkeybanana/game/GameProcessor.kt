@@ -21,7 +21,7 @@ class GameProcessor(
     private var gameInterface: GameInterface?
 ) {
     private var isGamePaused: Boolean = false
-    private var msPerFrame = 20
+    private var msPerFrame = 17
     private var currentStatus = GameStatus.STATUS_NOT_STARTED
     private var points: Int = 0
     private var workSprites: MutableList<Sprite> = mutableListOf()
