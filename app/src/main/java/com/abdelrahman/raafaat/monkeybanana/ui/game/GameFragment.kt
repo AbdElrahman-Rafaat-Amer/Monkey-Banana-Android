@@ -33,6 +33,7 @@ class GameFragment : Fragment(), View.OnTouchListener, SurfaceHolder.Callback,
     private var drawingThread: Thread? = null
     private var points: Int = 0
     private val gameViewModel: GameViewModel by activityViewModels()
+    private var isGamePaused = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +46,7 @@ class GameFragment : Fragment(), View.OnTouchListener, SurfaceHolder.Callback,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initViews()
         binding.surfaceView.keepScreenOn = true
         holder = binding.surfaceView.holder
         binding.surfaceView.setZOrderOnTop(true)
@@ -54,6 +56,17 @@ class GameFragment : Fragment(), View.OnTouchListener, SurfaceHolder.Callback,
 
         // Initialize the GameProcessor.
         gameProcessor = GameProcessor(requireContext(), holder, globalPaint, this)
+    }
+
+    private fun initViews() {
+        binding.pauseResumeImage.setOnClickListener {
+            isGamePaused = !isGamePaused
+            if (isGamePaused) {
+                gameProcessor.resume()
+            } else {
+                gameProcessor.pause()
+            }
+        }
     }
 
     //OnTouchListener
@@ -136,8 +149,8 @@ class GameFragment : Fragment(), View.OnTouchListener, SurfaceHolder.Callback,
         val window = alertDialog.window
         window!!.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         window.setGravity(Gravity.CENTER)
-        scoreTextView.text = getString(R.string.score,points)
-        bestScoreTextView.text = getString(R.string.best_score,gameViewModel.getBestScore())
+        scoreTextView.text = getString(R.string.score, points)
+        bestScoreTextView.text = getString(R.string.best_score, gameViewModel.getBestScore())
         cancelButton.setOnClickListener {
             alertDialog.dismiss()
             navigateToNextScreen()
@@ -155,11 +168,13 @@ class GameFragment : Fragment(), View.OnTouchListener, SurfaceHolder.Callback,
 
     override fun onResume() {
         super.onResume()
+        isGamePaused = false
         gameProcessor.resume()
     }
 
     override fun onPause() {
         super.onPause()
+        isGamePaused = true
         gameProcessor.pause()
     }
 
