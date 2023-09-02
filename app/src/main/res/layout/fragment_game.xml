@@ -28,7 +28,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/pauseResumeImage"
+        android:id="@+id/pauseImage"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_margin="10dp"
@@ -45,9 +45,16 @@
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/pauseResumeImage"
+        app:layout_constraintBottom_toBottomOf="@+id/pauseImage"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/pauseResumeImage"
+        app:layout_constraintTop_toTopOf="@+id/pauseImage"
         tools:text="points: 0" />
+
+    <include
+        android:id="@+id/pauseLayout"
+        layout="@layout/pause_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
