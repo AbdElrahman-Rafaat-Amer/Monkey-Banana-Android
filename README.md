@@ -3,6 +3,8 @@ MonkeyBanana is a fun and addictive mobile game where you play as a cute little 
 
 # Installation
 MonkeyBanana is available for download on both iOS and Android devices. To install the game, simply search for "MonkeyBanana" in the App Store or Google Play Store and click on the "Install" button. The game is free to download and play, but there are some optional in-app purchases available.
+download link from Google Play
+https://play.google.com/store/apps/details?id=com.abdelrahman.raafaat.monkeybanana
 
 # Gameplay
 The objective of MonkeyBanana is to collect as many bananas as possible while avoiding obstacles such as rocks, trees, and other animals. You control the monkey by tapping the screen to make it jump. The longer you hold down the screen, the higher the monkey will jump. Collecting bananas will earn you points, while hitting obstacles will end the game.
