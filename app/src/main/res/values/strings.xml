@@ -7,5 +7,8 @@
     <string name="cancel">Cancel</string>
     <string name="score">Your Score: %1$d</string>
     <string name="best_score">Best Score: %1$d</string>
-    <string name="pauseImage">Pause/Resume Image</string>
+    <string name="pauseImage">Pause Image</string>
+    <string name="paused">Paused</string>
+    <string name="leave">LEAVE</string>
+    <string name="resume">RESUME</string>
 </resources>

@@ -34,6 +34,7 @@ class GameFragment : Fragment(), View.OnTouchListener, SurfaceHolder.Callback,
     private var points: Int = 0
     private val gameViewModel: GameViewModel by activityViewModels()
     private var isGamePaused = false
+    private var isGameOver = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,13 +60,18 @@ class GameFragment : Fragment(), View.OnTouchListener, SurfaceHolder.Callback,
     }
 
     private fun initViews() {
-        binding.pauseResumeImage.setOnClickListener {
-            isGamePaused = !isGamePaused
-            if (isGamePaused) {
-                gameProcessor.resume()
-            } else {
-                gameProcessor.pause()
+        binding.pauseImage.setOnClickListener {
+            if (!isGamePaused) {
+                pauseGame()
             }
+        }
+
+        binding.pauseLayout.resumeButton.setOnClickListener {
+            resumeGame()
+        }
+
+        binding.pauseLayout.leaveButton.setOnClickListener {
+            navigateToNextScreen()
         }
     }
 
@@ -130,6 +136,7 @@ class GameFragment : Fragment(), View.OnTouchListener, SurfaceHolder.Callback,
     }
 
     override fun onGameOver() {
+        isGameOver = true
         activity?.runOnUiThread {
             showGameOverDialog()
             binding.pointsTextView.visibility = View.GONE
@@ -165,17 +172,23 @@ class GameFragment : Fragment(), View.OnTouchListener, SurfaceHolder.Callback,
         binding.root.findNavController().navigate(gameOverAction)
     }
 
-
-    override fun onResume() {
-        super.onResume()
+    private fun resumeGame() {
+        binding.pauseLayout.root.visibility = View.GONE
         isGamePaused = false
         gameProcessor.resume()
     }
 
     override fun onPause() {
         super.onPause()
+        if (!isGamePaused && !isGameOver) {
+            pauseGame()
+        }
+    }
+
+    private fun pauseGame() {
         isGamePaused = true
         gameProcessor.pause()
+        binding.pauseLayout.root.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {
