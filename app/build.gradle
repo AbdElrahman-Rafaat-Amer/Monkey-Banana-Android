@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace 'com.abdelrahman.raafaat.monkeybanana'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.abdelrahman.raafaat.monkeybanana"
         minSdk 28
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
