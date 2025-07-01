@@ -22,10 +22,11 @@ import com.abdelrahman.raafaat.monkeybanana.game.GameProcessor
 import com.abdelrahman.raafaat.monkeybanana.game.utils.GameUtils
 import com.abdelrahman.raafaat.monkeybanana.ui.viewmodel.GameViewModel
 
-
-class GameFragment : Fragment(), View.OnTouchListener, SurfaceHolder.Callback,
+class GameFragment :
+    Fragment(),
+    View.OnTouchListener,
+    SurfaceHolder.Callback,
     GameProcessor.GameInterface {
-
     private lateinit var binding: FragmentGameBinding
     private lateinit var gameProcessor: GameProcessor
     private lateinit var holder: SurfaceHolder
@@ -37,14 +38,18 @@ class GameFragment : Fragment(), View.OnTouchListener, SurfaceHolder.Callback,
     private var isGameOver = false
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentGameBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
@@ -75,30 +80,38 @@ class GameFragment : Fragment(), View.OnTouchListener, SurfaceHolder.Callback,
         }
     }
 
-    //OnTouchListener
-    override fun onTouch(view: View?, event: MotionEvent?): Boolean {
+    // OnTouchListener
+    override fun onTouch(
+        view: View?,
+        event: MotionEvent?,
+    ): Boolean {
         if (event?.action == MotionEvent.ACTION_DOWN) {
             gameProcessor.onTap()
         }
         return false
     }
 
-
-    //SurfaceHolder
+    // SurfaceHolder
     override fun surfaceCreated(holder: SurfaceHolder) {
         startDrawingThread()
     }
 
     private fun startDrawingThread() {
         stopDrawingThread()
-        drawingThread = Thread {
-            gameProcessor.execute()
-        }
+        drawingThread =
+            Thread {
+                gameProcessor.execute()
+            }
         drawingThread!!.start()
     }
 
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-        //Will not used for now
+    override fun surfaceChanged(
+        holder: SurfaceHolder,
+        format: Int,
+        width: Int,
+        height: Int,
+    ) {
+        // Will not used for now
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
@@ -115,7 +128,7 @@ class GameFragment : Fragment(), View.OnTouchListener, SurfaceHolder.Callback,
         drawingThread = null
     }
 
-    //GameInterface
+    // GameInterface
     override fun onGameStart() {
         activity?.runOnUiThread {
             binding.pointsTextView.visibility = View.VISIBLE
@@ -164,7 +177,6 @@ class GameFragment : Fragment(), View.OnTouchListener, SurfaceHolder.Callback,
             gameViewModel.onGameEnded(points)
             points = 0
         }
-
     }
 
     private fun navigateToNextScreen() {

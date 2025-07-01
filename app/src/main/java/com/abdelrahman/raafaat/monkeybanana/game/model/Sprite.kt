@@ -9,11 +9,14 @@ import com.abdelrahman.raafaat.monkeybanana.game.GameStatus
  * these behaviors.
  */
 interface Sprite {
-
     /**
      * to request the drawing on the Sprite’s Canvas
      */
-    fun onDraw(canvas: Canvas, globalPaint: Paint, status: GameStatus)
+    fun onDraw(
+        canvas: Canvas,
+        globalPaint: Paint,
+        status: GameStatus,
+    )
 
     /**
      * to know if a Sprite is still alive or not

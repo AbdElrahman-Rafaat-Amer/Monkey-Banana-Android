@@ -1,9 +1,9 @@
 package com.abdelrahman.raafaat.monkeybanana.ui.game
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.abdelrahman.raafaat.monkeybanana.R
 import com.abdelrahman.raafaat.monkeybanana.databinding.ActivityMainBinding
 import com.abdelrahman.raafaat.monkeybanana.game.utils.GameUtils.TAG
@@ -16,7 +16,6 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
     private var mInterstitialAd: InterstitialAd? = null
     private val gameViewModel: GameViewModel by viewModels()
@@ -34,7 +33,10 @@ class MainActivity : AppCompatActivity() {
     private fun initAds() {
         val adRequest = AdRequest.Builder().build()
 
-        InterstitialAd.load(this, getString(R.string.interstitial_ad_unit_id), adRequest,
+        InterstitialAd.load(
+            this,
+            getString(R.string.interstitial_ad_unit_id),
+            adRequest,
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
                     mInterstitialAd = interstitialAd
@@ -48,39 +50,40 @@ class MainActivity : AppCompatActivity() {
                     Log.i(TAG, "onAdFailedToLoad:error.domain   ${adError.domain}")
                     Log.i(TAG, "onAdFailedToLoad:error.message  ${adError.message}")
                 }
-            })
+            },
+        )
 
-        mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+        mInterstitialAd?.fullScreenContentCallback =
+            object : FullScreenContentCallback() {
+                override fun onAdClicked() {
+                    super.onAdClicked()
+                    Log.i(TAG, "onAdClicked: ")
+                }
 
-            override fun onAdClicked() {
-                super.onAdClicked()
-                Log.i(TAG, "onAdClicked: ")
+                override fun onAdDismissedFullScreenContent() {
+                    super.onAdDismissedFullScreenContent()
+                    Log.i(TAG, "onAdDismissedFullScreenContent: ")
+                }
+
+                override fun onAdFailedToShowFullScreenContent(error: AdError) {
+                    super.onAdFailedToShowFullScreenContent(error)
+                    mInterstitialAd = null
+                    Log.i(TAG, "onAdFailedToShowFullScreenContent:error.cause    ${error.cause}")
+                    Log.i(TAG, "onAdFailedToShowFullScreenContent:error.code     ${error.code}")
+                    Log.i(TAG, "onAdFailedToShowFullScreenContent:error.domain   ${error.domain}")
+                    Log.i(TAG, "onAdFailedToShowFullScreenContent:error.message  ${error.message}")
+                }
+
+                override fun onAdImpression() {
+                    super.onAdImpression()
+                    Log.i(TAG, "onAdImpression: ")
+                }
+
+                override fun onAdShowedFullScreenContent() {
+                    super.onAdShowedFullScreenContent()
+                    Log.i(TAG, "onAdShowedFullScreenContent: ")
+                }
             }
-
-            override fun onAdDismissedFullScreenContent() {
-                super.onAdDismissedFullScreenContent()
-                Log.i(TAG, "onAdDismissedFullScreenContent: ")
-            }
-
-            override fun onAdFailedToShowFullScreenContent(error: AdError) {
-                super.onAdFailedToShowFullScreenContent(error)
-                mInterstitialAd = null
-                Log.i(TAG, "onAdFailedToShowFullScreenContent:error.cause    ${error.cause}")
-                Log.i(TAG, "onAdFailedToShowFullScreenContent:error.code     ${error.code}")
-                Log.i(TAG, "onAdFailedToShowFullScreenContent:error.domain   ${error.domain}")
-                Log.i(TAG, "onAdFailedToShowFullScreenContent:error.message  ${error.message}")
-            }
-
-            override fun onAdImpression() {
-                super.onAdImpression()
-                Log.i(TAG, "onAdImpression: ")
-            }
-
-            override fun onAdShowedFullScreenContent() {
-                super.onAdShowedFullScreenContent()
-                Log.i(TAG, "onAdShowedFullScreenContent: ")
-            }
-        }
     }
 
     private fun observeViewModel() {

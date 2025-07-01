@@ -9,8 +9,9 @@ import androidx.lifecycle.MutableLiveData
 
 private const val HIGH_SCORE_KEY = "HIGH_SCORE_KEY"
 
-class GameViewModel(private var application: Application) : AndroidViewModel(application) {
-
+class GameViewModel(
+    private var application: Application,
+) : AndroidViewModel(application) {
     private var _isGameEnded = MutableLiveData(false)
     var isGameEnded: LiveData<Boolean> = _isGameEnded
 
@@ -18,7 +19,7 @@ class GameViewModel(private var application: Application) : AndroidViewModel(app
         get() {
             return application.getSharedPreferences(
                 "com.abdelrahman.raafaat.monkeybanana",
-                Context.MODE_PRIVATE
+                Context.MODE_PRIVATE,
             )
         }
 
@@ -39,7 +40,5 @@ class GameViewModel(private var application: Application) : AndroidViewModel(app
 
     private fun isBestScore(score: Int): Boolean = getBestScore() < score
 
-
     fun getBestScore(): Int = sharedPreferences.getInt(HIGH_SCORE_KEY, 0)
-
 }

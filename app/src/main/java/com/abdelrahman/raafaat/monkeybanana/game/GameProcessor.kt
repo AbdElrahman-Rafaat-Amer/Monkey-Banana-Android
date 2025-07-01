@@ -7,18 +7,18 @@ import android.graphics.PorterDuff
 import android.view.SurfaceHolder
 import androidx.annotation.WorkerThread
 import com.abdelrahman.raafaat.monkeybanana.R
-import com.abdelrahman.raafaat.monkeybanana.game.utils.GameUtils.MIN_MONKEES
 import com.abdelrahman.raafaat.monkeybanana.game.model.BananaSprite
 import com.abdelrahman.raafaat.monkeybanana.game.model.GroundSprite
 import com.abdelrahman.raafaat.monkeybanana.game.model.MonkeySprite
 import com.abdelrahman.raafaat.monkeybanana.game.model.Sprite
 import com.abdelrahman.raafaat.monkeybanana.game.utils.GameUtils
+import com.abdelrahman.raafaat.monkeybanana.game.utils.GameUtils.MIN_MONKEES
 
 class GameProcessor(
     private val context: Context,
     private val holder: SurfaceHolder,
     private val globalPaint: Paint,
-    private var gameInterface: GameInterface?
+    private var gameInterface: GameInterface?,
 ) {
     private var isGamePaused: Boolean = false
     private var msPerFrame = 17
@@ -103,11 +103,12 @@ class GameProcessor(
                         nextMonkeyX = monkeySprite!!.x + monkeyInterval
                     }
                     while (countMonkees < MIN_MONKEES) {
-                        monkeySprite = MonkeySprite(
-                            context,
-                            nextMonkeyX,
-                            monkeySprite?.lastBlockY
-                        )
+                        monkeySprite =
+                            MonkeySprite(
+                                context,
+                                nextMonkeyX,
+                                monkeySprite?.lastBlockY,
+                            )
                         workSprites.add(0, monkeySprite!!)
 
                         nextMonkeyX += monkeyWidth + monkeyInterval
@@ -126,7 +127,7 @@ class GameProcessor(
             The rendering time is measured before comparing this time to a constant called GAP.
             This constant allows us to add, if necessary, a delay to avoid that the rendering
             phase of the Game Loop be too fast.
-             */
+         */
         val duration = System.currentTimeMillis() - startTime
         val gap = msPerFrame - duration
         if (gap > 0) {
@@ -248,8 +249,11 @@ class GameProcessor(
 
     interface GameInterface {
         fun onGameStart()
+
         fun onGetPoint()
+
         fun onHit()
+
         fun onGameOver()
     }
 }

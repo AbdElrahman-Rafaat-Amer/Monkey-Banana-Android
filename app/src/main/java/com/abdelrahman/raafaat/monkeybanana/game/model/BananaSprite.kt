@@ -15,7 +15,6 @@ import com.abdelrahman.raafaat.monkeybanana.game.utils.GameUtils.UNDEFINED
 class BananaSprite(
     context: Context,
 ) : Sprite {
-
     private val bananaDrawable: Drawable = GameUtils.getDrawable(context, R.drawable.banana)
     private val bananaHeight: Float = GameUtils.getDimenInPx(context, R.dimen.banana_height)
     private val bananaWidth: Float =
@@ -29,7 +28,11 @@ class BananaSprite(
     private var isAlive: Boolean = true
     private var maxY = 0f
 
-    override fun onDraw(canvas: Canvas, globalPaint: Paint, status: GameStatus) {
+    override fun onDraw(
+        canvas: Canvas,
+        globalPaint: Paint,
+        status: GameStatus,
+    ) {
         isAlive = status != GameStatus.STATUS_NOT_STARTED
         maxY = canvas.height - bananaHeight - groundHeight
 
@@ -58,12 +61,14 @@ class BananaSprite(
     override fun isHit(sprite: Sprite): Boolean = false
 
     override fun getScore(): Int = 0
-    fun getRect(): Rect = RectF(
-        x,
-        y,
-        x + bananaWidth,
-        y + bananaHeight
-    ).toRect()
+
+    fun getRect(): Rect =
+        RectF(
+            x,
+            y,
+            x + bananaWidth,
+            y + bananaHeight,
+        ).toRect()
 
     fun jump() {
         synchronized(this) {
@@ -73,5 +78,4 @@ class BananaSprite(
             }
         }
     }
-
 }
